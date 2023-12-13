@@ -3,8 +3,9 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 
-import { errorHandler } from '@s1mon-sgtickets/common';
+import { currentUser, errorHandler } from '@s1mon-sgtickets/common';
 import { NotFoundError } from '@s1mon-sgtickets/common';
+import { createTicketRouter } from './routes/new';
 
 const app = express();
 app.set('trust proxy', true);
@@ -15,6 +16,9 @@ app.use(
     secure: process.env.NODE_ENV !== 'test'
   })
 );
+app.use(currentUser)
+
+app.use(createTicketRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();
